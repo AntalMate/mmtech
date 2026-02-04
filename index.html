@@ -1,119 +1,275 @@
 <!DOCTYPE html>
 <html lang="hu">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MMTECH</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-    <link rel="manifest" href="favicon/site.webmanifest">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<meta charset="UTF-8">
+<title>VOID_ETHEREAL_GLASS_V15_HYBRID</title>
+<style>
+    html,body{
+        margin:0; padding:0; width:100%; height:100%; overflow:hidden;
+        background:#000;
+        font-family:'Segoe UI', 'Courier New', monospace;
+        cursor:none;
+        color: #fff;
+    }
+    canvas{position:fixed;inset:0;z-index:1}
+    #ui-layer{position:fixed;inset:0;z-index:10;pointer-events:none}
+    
+    #crosshair{
+        position:absolute; width:24px;height:24px;
+        border:2px solid rgba(0,204,255,0.4); border-radius:50%;
+        box-shadow: 0 0 15px rgba(0,204,255,0.3);
+        z-index: 20;
+    }
+    
+    #hud{position:absolute;top:20px;left:20px;font-size:10px;font-weight:bold; color:#0cf; letter-spacing:2px;}
 
+    /* TÉRBELI GLASS PANEL */
+    #content-panel{
+        position:absolute; 
+        top: -1000px; left: -1000px; /* Kezdő pozíció kívül */
+        width: 300px;
+        padding: 25px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(25px) saturate(180%);
+        -webkit-backdrop-filter: blur(25px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        
+        display:none;
+        pointer-events:none; 
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 15;
+    }
+
+    #content-panel.active {
+        display: block;
+        opacity: 1;
+    }
+
+    #title { margin: 0; font-size: 22px; font-weight: 300; letter-spacing: 1px; color: #fff; }
+    #desc { line-height: 1.5; color: rgba(255,255,255,0.7); font-size: 13px; margin: 15px 0; }
+
+    .node-hint{position:fixed;bottom:40px;width:100%;text-align:center;font-size:10px;letter-spacing:5px;}
+</style>
 </head>
-
 <body>
-    <!-- Fejléc -->
-<header class="header">
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--main-bg);">
-      <div class="container-fluid px-4">
-        <!-- Bal oldali óra -->
-        <div id="clockWidget" class="clock-widget d-flex align-items-center">
-          <div class="analog-clock me-3" aria-hidden="true">
-            <div class="dial">
-              <div class="hand hour" id="hourHand"></div>
-              <div class="hand minute" id="minuteHand"></div>
-              <div class="hand second" id="secondHand"></div>
-              <div class="center-dot"></div>
-            </div>
-          </div>
-          <div class="digital-wrap">
-            <div id="digitalTime" class="digital-time">00:00:00</div>
-            <div id="digitalDate" class="digital-date">—</div>
-          </div>
+
+<div id="ui-layer">
+    <div id="crosshair"></div>
+    <div id="hud">CORE_OS_V26 // ETHEREAL_INTERFACE</div>
+    <div class="node-hint" id="hint">SEARCHING_FOR_SIGNALS...</div>
+
+    <div id="content-panel">
+        <h1 id="title"></h1>
+        <p id="desc"></p>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:9px; color:rgba(0,204,255,0.6)">[ CLICK_TO_NAVIGATE ]</span>
+            <span style="font-size:9px; color:rgba(255,255,255,0.2)">SECURE_LINK</span>
         </div>
-  
-        <!-- Jobb oldali menü -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-          aria-controls="mainNav" aria-expanded="false" aria-label="Menü">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-  
-        <div class="collapse navbar-collapse justify-content-end" id="mainNav">
-          <ul class="navbar-nav mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" href="#hero">Kezdőlap</a></li>
-            <li class="nav-item"><a class="nav-link" href="#team">Csapat</a></li>
-            <li class="nav-item"><a class="nav-link" href="ai.html">AI szolgáltatások</a></li>
-            <li class="nav-item"><a class="nav-link" href="#contact">Kapcsolat</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </header>
+    </div>
+</div>
 
-    <!-- Hero szekció -->
-    <section class="hero text-center text-white d-flex align-items-center">
-        <div class="container">
-            <img src="logo.png" alt="MMTECH logó" class="hero-logo mb-3">
-            <br>
-            <a href="#team"><button class="btn btn-hero">Tudjon meg többet</button></a>
-        </div>
-    </section>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
 
-    <!-- Csapat szekció -->
-    <section id="team" class="container my-5">
-        <h2 class="text-center mb-4">Ismerje meg a csapatot</h2>
-        <div class="row text-center">
-            <!-- Alkalmazott 1 -->
-            <div class="col-md-6">
-                <div class="card p-3 shadow">
-                    <img src="profil.png"
-                        class="rounded-circle mx-auto border border-3 border-primary" alt="dezso">
-                    <h4 class="mt-3">Antal Máté</h4>
-                    <p class="text-muted">Vezérigazgató</p>
-                    <button class="btn btn-primary" onclick="toggleBio('dezso')">Bemutatkozás</button>
-                    <p class="bio mt-2" id="dezso" style="display:none;">
-                        Máté a cég alapítója és vezetője, több mint 100 éves tapasztalattal az IT világában.
-                    </p>
-                </div>
-            </div>
-            <!-- Alkalmazott 2 -->
-            <div class="col-md-6">
-                <div class="card p-3 shadow">
-                    <img src="kokeny.png"
-                        class="rounded-circle mx-auto border border-3 border-primary" alt="sziti">
-                    <h4 class="mt-3">Szitovszki Máté</h4>
-                    <p class="text-muted">Vezető Fejlesztő</p>
-                    <button class="btn btn-primary" onclick="toggleBio('sziti')">Bemutatkozás</button>
-                    <p class="bio mt-2" id="sziti" style="display:none;">
-                        Máté szenvedélyesen fejleszt webes és mobilalkalmazásokat modern technológiákkal.
-                    </p>
-                </div>
-            </div>
-            <!-- Alkalmazott 3 -->
-        </div>
-    </section>
+<script type="module">
+import * as THREE from 'three';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
-    <!-- Galéria szekció -->
-    <section class="container text-center my-5">
-        <h2>Pillanatképek</h2>
-        <button class="btn btn-primary" onclick="showNextImage()">Képek vetítése</button>
-        <br>
-        <img id="galleryImage" src="" class="img-fluid my-3 shadow" style="max-height:300px; display:none;">
-    </section>
+/* ========= CONFIG & DATA ========= */
+const MAX_Z_TRAVEL = 150; 
+const CAMERA_START_Z = 25;
+const LOCK_BREAK_DIST = 160;
+const INTERACTION_DISTANCE = 55;
 
-    <!-- Lábjegyzet -->
-    <footer class="footer text-white text-center p-3">
-        <p>MMTECH &copy; 2025</p>
-        <p>Email: info@mmtech.com | Cím: Budapest, Tech utca 1. | Telefon: +36 1 555 1234</p>
-        <a href="#" class="footer-link">Adatvédelmi nyilatkozat</a> |
-        <a href="#" class="footer-link">ÁSZF</a>
-    </footer>
+// Itt adhatod meg a linkeket
+const nodes = [
+ {id:1, title:"A csapat", desc:"Ismerje meg csapatunkat!", pos:[8, 3, -25], color:0x00ffff, url:"https://google.com"},
+ {id:2, title:"Pillanatképek", desc:"Ismerje munkánkat pillanatképeinken keresztül!", pos:[-12, -3, -75], color:0xff00ff, url:"https://github.com"},
+ {id:3, title:"AI Szolgáltatásaink", desc:"Próbálja ki a Text to Speech, vagy a nem kitaláló mesterséges intelligenciánkat!", pos:[6, 6, -135], color:0x00ff00, url:"https://threejs.org"}
+];
 
-    <script src="script.js"></script>
+/* ========= UI ========= */
+const crosshair = document.getElementById('crosshair');
+const panel = document.getElementById('content-panel');
+const hint = document.getElementById('hint');
+const title = document.getElementById('title');
+const desc = document.getElementById('desc');
+
+let mouse = {x: innerWidth/2, y: innerHeight/2};
+let cross = {x: mouse.x, y: mouse.y};
+let mouseNDC = {x: 0, y: 0};
+
+window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX; mouse.y = e.clientY;
+    mouseNDC.x = (e.clientX / innerWidth) * 2 - 1;
+    mouseNDC.y = -(e.clientY / innerHeight) * 2 + 1;
+});
+
+/* ========= THREE SCENE ========= */
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000205);
+scene.fog = new THREE.Fog(0x000000, 10, 180);
+
+const camera = new THREE.PerspectiveCamera(75, innerWidth/innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.body.appendChild(renderer.domElement);
+
+// CSILLAGOK
+const starGeom = new THREE.BufferGeometry();
+const starPos = [];
+for(let i=0; i<3500; i++) starPos.push(THREE.MathUtils.randFloatSpread(500), THREE.MathUtils.randFloatSpread(500), THREE.MathUtils.randFloatSpread(500));
+starGeom.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+const stars = new THREE.Points(starGeom, new THREE.PointsMaterial({ color: 0xffffff, size: 0.5, transparent: true, opacity: 0.5 }));
+scene.add(stars);
+
+const grid = new THREE.GridHelper(600, 100, 0x222222, 0x111111);
+grid.position.y = -10;
+scene.add(grid);
+
+const interactives = [];
+nodes.forEach(n => {
+    const g = new THREE.Group();
+    const out = new THREE.Mesh(new THREE.IcosahedronGeometry(1.6, 0), new THREE.MeshPhongMaterial({ color: n.color, wireframe: true, transparent: true, opacity: 0.4 }));
+    const inn = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshPhongMaterial({ color: 0xffffff, emissive: n.color, emissiveIntensity: 5 }));
+    g.add(out, inn);
+    g.position.set(...n.pos);
+    g.userData = n;
+    scene.add(g);
+    interactives.push(g);
+});
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x000000, 1.5));
+const light = new THREE.PointLight(0x00ccff, 150);
+light.position.set(0, 10, 15);
+scene.add(light);
+
+/* ===== 3D TEXT ===== */
+let textMat = new THREE.MeshPhongMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.2, transparent: true });
+const mmGroup = new THREE.Group();
+scene.add(mmGroup);
+new FontLoader().load('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/fonts/helvetiker_bold.typeface.json', font => {
+    const g1 = new TextGeometry('MMTech', { font, size: 3.5, height: 0.5 }); g1.center();
+    const g2 = new TextGeometry('PROXIMITY_SENSORS_ACTIVE', { font, size: 0.4, height: 0.05 }); g2.center();
+    const m1 = new THREE.Mesh(g1, textMat); const m2 = new THREE.Mesh(g2, textMat);
+    m2.position.y = -3.5; mmGroup.add(m1, m2);
+});
+
+/* ========= ENGINE ========= */
+let scroll = 0, targetScroll = 0;
+window.addEventListener('wheel', e => { 
+    targetScroll = Math.min(MAX_Z_TRAVEL, Math.max(0, targetScroll + e.deltaY * 0.06)); 
+});
+
+const raycaster = new THREE.Raycaster();
+let lockedTarget = null;
+let lockStr = 0;
+
+// NAVIGÁCIÓ KATTINTÁSKOR
+window.addEventListener('click', () => {
+    if(lockedTarget) {
+        window.location.href = lockedTarget.userData.url;
+    }
+});
+
+function animate() {
+    requestAnimationFrame(animate);
+    scroll += (targetScroll - scroll) * 0.08;
+
+    // Kamera mozgás (megmaradt a parallax)
+    camera.position.x += (mouseNDC.x * 3 - camera.position.x) * 0.05;
+    camera.position.y += (mouseNDC.y * 3 - camera.position.y) * 0.05;
+    camera.position.z = CAMERA_START_Z - scroll;
+    camera.rotation.y = -camera.position.x * 0.02;
+    camera.rotation.x = camera.position.y * 0.02;
+
+    textMat.opacity = Math.min(1, Math.max(0, (camera.position.z + 5) / 15));
+
+    let curHover = null;
+    let minDist = 999;
+
+    interactives.forEach(g => {
+        g.children[0].rotation.y += 0.01;
+        const d = camera.position.distanceTo(g.position);
+        
+        if (g.position.z < camera.position.z) {
+            raycaster.setFromCamera(new THREE.Vector2((cross.x/innerWidth)*2-1, -(cross.y/innerHeight)*2+1), camera);
+            if(raycaster.intersectObjects([g], true).length) { 
+                curHover = g; 
+                minDist = d; 
+            }
+        }
+        // Skálázódás hoverkor
+        const s = (curHover === g && d < INTERACTION_DISTANCE) ? 1.3 : 1;
+        g.scale.lerp(new THREE.Vector3(s,s,s), 0.1);
+    });
+
+    // Célzás és Panel logika
+    if (curHover && minDist < INTERACTION_DISTANCE) {
+        lockedTarget = curHover;
+        // Panel frissítése
+        if (!panel.classList.contains('active')) {
+            title.innerText = lockedTarget.userData.title;
+            desc.innerText = lockedTarget.userData.desc;
+            panel.classList.add('active');
+        }
+    } else if (curHover && minDist >= INTERACTION_DISTANCE) {
+        lockedTarget = null;
+        panel.classList.remove('active');
+        hint.innerText = "[ SIGNAL_TOO_WEAK ]";
+        crosshair.style.borderColor = "rgba(255,50,50,0.5)";
+    }
+
+    if (lockedTarget) {
+        const v = lockedTarget.position.clone().project(camera);
+        const tx = (v.x*.5+.5)*innerWidth, ty = (-v.y*.5+.5)*innerHeight;
+        
+        // Ha túl messze rántjuk az egeret a lakatolt célponttól, elengedjük
+        if (Math.hypot(mouse.x-tx, mouse.y-ty) < LOCK_BREAK_DIST) {
+            lockStr = Math.min(lockStr+0.1, 1);
+            cross.x += (tx-cross.x)*0.07*lockStr; cross.y += (ty-cross.y)*0.07*lockStr;
+            
+            // PANEL POZÍCIÓ KÖVETÉSE
+            panel.style.left = `${tx + 40}px`;
+            panel.style.top = `${ty - 60}px`;
+            
+            hint.innerText = "[ LINK_ESTABLISHED ]";
+            crosshair.style.borderColor = "#0cf";
+        } else { 
+            lockedTarget = null; 
+            lockStr = 0; 
+            panel.classList.remove('active');
+        }
+    } else {
+        cross.x += (mouse.x-cross.x)*0.12; cross.y += (mouse.y-cross.y)*0.12;
+        panel.classList.remove('active');
+        if(hint.innerText !== "[ SIGNAL_TOO_WEAK ]") {
+            hint.innerText = "EXPLORING_ETHEREAL_VOID";
+            crosshair.style.borderColor = "rgba(0,204,255,0.4)";
+        }
+    }
+
+    crosshair.style.left = `${cross.x-12}px`; crosshair.style.top = `${cross.y-12}px`;
+    stars.rotation.z += 0.0002;
+    renderer.render(scene, camera);
+}
+animate();
+
+window.addEventListener('resize', () => {
+    camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+});
+</script>
 </body>
-
 </html>
