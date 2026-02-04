@@ -161,7 +161,7 @@ const mmGroup = new THREE.Group();
 scene.add(mmGroup);
 new FontLoader().load('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/fonts/helvetiker_bold.typeface.json', font => {
     const g1 = new TextGeometry('MMTech', { font, size: 3.5, height: 0.5 }); g1.center();
-    const g2 = new TextGeometry('PROXIMITY_SENSORS_ACTIVE', { font, size: 0.4, height: 0.05 }); g2.center();
+    const g2 = new TextGeometry('Innovate your digital future', { font, size: 0.4, height: 0.05 }); g2.center();
     const m1 = new THREE.Mesh(g1, textMat); const m2 = new THREE.Mesh(g2, textMat);
     m2.position.y = -3.5; mmGroup.add(m1, m2);
 });
