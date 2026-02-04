@@ -1,0 +1,219 @@
+/* Alapszínek a logó alapján */
+:root {
+    --main-bg: rgb(66,72,112);   /* logó kék */
+    --main-text: #ffffff;
+    --secondary-text: #cccccc;
+    --primary-color: #3b3f70;
+  }
+  
+  /* Fejléc */
+  .header {
+    background-color: var(--main-bg);
+    height: 70px;
+  }
+  .header .nav-link {
+    color: var(--main-text);
+    margin-right: 15px;
+    text-decoration: none;
+  }
+  .header .nav-link:hover {
+    color: var(--secondary-text);
+  }
+  .logo {
+    height: 40px;
+  }
+  
+  /* Hero */
+  .hero {
+    height: 60vh;
+    background-color: var(--main-bg);
+  }
+  .hero-logo {
+    height: auto;
+    max-width: 40vw;
+  }
+  .btn-hero {
+    background-color: var(--main-text);
+    color: var(--main-bg);
+    font-weight: bold;
+  }
+  .btn-hero:hover {
+    background-color: var(--secondary-text);
+    color: var(--main-bg);
+  }
+  
+  /* Kártyák */
+  .card img {
+    width: 120px;
+    height: 120px;
+  }
+  .btn-primary {
+    background-color: var(--main-bg);
+    border: none;
+  }
+  .btn-primary:hover {
+    background-color: #2c2f55;
+  }
+  
+  /* Footer */
+  .footer {
+    background-color: var(--main-bg);
+  }
+  .footer-link {
+    color: var(--secondary-text);
+    text-decoration: none;
+  }
+  .footer-link:hover {
+    color: var(--main-text);
+  }
+  
+  /* ---- Smooth clock styles ---- */
+.clock-widget {
+    color: #ffffff;
+    font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    gap: 10px;
+  }
+  
+  /* Analóg óra */
+  .analog-clock {
+    width: 56px;
+    height: 56px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .analog-clock .dial {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    border: 2px solid white;
+    position: relative;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .analog-clock .hand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform-origin: 50% 90%;
+    transform: translate(-50%, -100%) rotate(0deg);
+    transition: transform 120ms linear; /* fallback for small corrections */
+  }
+  .hand.hour {
+    width: 2.5px;
+    height: 27%;
+    border-radius: 4px;
+    background: var(--main-text);
+    opacity: 0.95;
+  }
+  .hand.minute {
+    width: 1.5px;
+    height: 35%;
+    border-radius: 4px;
+    background: var(--main-text);
+    opacity: 0.9;
+  }
+  .hand.second {
+    width: 1px;
+    height: 45%;
+    border-radius: 2px;
+    background: var(--main-bg); /* second hand has accent (we invert using a small outer) */
+    box-shadow: 0 0 6px rgba(255,255,255,0.25);
+    opacity: 1;
+    background-color: white;
+
+  }
+  
+  /* center dot */
+  .center-dot {
+    position: absolute;
+    left: 50%;
+    top: 49%;
+    width: 4px;
+    height:4px;
+    background: var(--main-text);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px rgba(255,255,255,0.15);
+  }
+  
+  /* Digitális rész */
+  .digital-wrap {
+    text-align: left;
+    display:flex;
+    flex-direction:column;
+    line-height:1;
+  }
+  .digital-time {
+    font-weight:700;
+    font-size: 0.95rem;
+    letter-spacing: 0.02em;
+    opacity: 0.98;
+    transition: opacity 250ms ease, transform 250ms ease;
+    transform-origin: left center;
+  }
+  .digital-date {
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.85);
+    margin-top:2px;
+    opacity: 0.9;
+  }
+  
+  /* Small subtle blink/float when the second changes */
+  .digital-time.pulse {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
+  
+  /* Responsive tweaks */
+  @media (max-width: 575px) {
+    .analog-clock { width:48px; height:48px; }
+    .analog-clock .dial { width:40px; height:40px; }
+    .digital-time { font-size:0.85rem; }
+  }
+
+  #galleryImage {
+  display: block;
+  margin: 0 auto; /* vízszintesen középre */
+}
+/* Navbar testreszabás */
+.navbar {
+  background-color: var(--main-bg) !important;
+}
+
+.navbar .nav-link {
+  color: var(--main-text) !important;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.navbar .nav-link:hover {
+  color: var(--secondary-text) !important;
+}
+
+.navbar-toggler {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.navbar-toggler-icon {
+  filter: invert(1);
+}
+/* --- AI cards hover effect --- */
+.ai-card {
+  transition: all 0.25s ease-in-out;
+  border: 1px solid rgba(255,255,255,0.1);
+  background-color: #ffffff0a;
+}
+
+.ai-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  border-color: var(--main-text);
+}
+
+.ai-card h4 {
+  color: var(--main-text);
+}
+
+.ai-card p {
+  color: var(--secondary-text);
+}
